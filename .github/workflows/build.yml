@@ -1,0 +1,53 @@
+name: STM32 Zephyr Blinky
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            cmake \
+            ninja-build \
+            gperf \
+            ccache \
+            dfu-util \
+            device-tree-compiler \
+            wget \
+            python3-pip
+
+      - name: Install west
+        run: |
+          pip3 install --user west
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Init Zephyr workspace
+        run: |
+          west init -l app
+          west update
+
+      - name: Export Zephyr environment
+        run: west zephyr-export
+
+      - name: Build Blinky
+        run: |
+          west build -b stm32_min_dev_blue app
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stm32f103-blinky
+          path: |
+            build/zephyr/zephyr.hex
+            build/zephyr/zephyr.bin
+          retention-days: 5
+
