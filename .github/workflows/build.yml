@@ -40,7 +40,7 @@ jobs:
 
       - name: Build Blinky
         run: |
-          west build -b stm32_min_dev_blue app
+          west build -b stm32_min_dev app
 
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
