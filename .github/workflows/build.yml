@@ -38,6 +38,10 @@ jobs:
       - name: Export Zephyr environment
         run: west zephyr-export
 
+      - name: Install Zephyr Python dependencies
+        run: |
+          pip3 install --user -r zephyr/scripts/requirements.txt
+
       - name: Install Zephyr SDK
         run: |
           ZSDK_VERSION=0.16.5
